@@ -20,6 +20,8 @@ func main() {
 	// GET関数を使用して、GETHTTPメソッドと/albumsパスをハンドラー関数に関連付ける
 	// getAlbums()ではないことに注意。関数の戻り値をいれてはいない。
 	router.GET("/albums", getAlbums)
+	// パスに含むidで検索。
+	router.GET("/albums/:id", getAlbumByID)
 	// 下で作成したpostAlbumsがrouter.POST(/albums)で使用出来るように、関連付ける
 	router.POST("/albums", postAlbums)
 
@@ -54,4 +56,21 @@ func postAlbums(c *gin.Context) {
 	// 新しくアルバムデータが追加されたJSONと、201ステータスが返される
 	c.IndentedJSON(http.StatusCreated, newAlbum)
 	// main次のように、関数が含まれるように関数を変更router.POSTします。から
+}
+
+// リクエストパスの/idを抽出しdataのidとで検索する
+func getAlbumByID(c *gin.Context) {
+	// urlのパラメータidをcontext.Paramを使って取得する
+	id := c.Param("id")
+	// for文でアルバムデータをループ
+	for _, a := range albums {
+		// パスのidとデータのidが一致したら
+		if a.ID == id {
+			// ステータスOK（200）とアルバムのデータを返す
+			c.IndentedJSON(http.StatusOK, a)
+			return
+		}
+	}
+	// ループを回っても見つからないならメッセージを出す。「http.StatusNotFound」は404
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "album not found"})
 }
