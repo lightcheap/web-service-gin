@@ -14,6 +14,14 @@ type album struct {
 	Price  float64 `json:"price"`
 }
 
+// アルバムのシードデータ
+// 本来はデータはDBにあるもんだけど、今回はここに
+var albums = []album{
+	{ID: "1", Title: "Blue Train", Artist: "John Coltrane", Price: 56.99},
+	{ID: "2", Title: "Jeru", Artist: "Gerry Mulligan", Price: 17.99},
+	{ID: "3", Title: "Sarah Vaughan and Clifford Brown", Artist: "Sarah Vaughan", Price: 39.99},
+}
+
 func main() {
 	// Defaultでginのルーターを初期化する
 	router := gin.Default()
@@ -29,17 +37,10 @@ func main() {
 	router.Run("localhost:8083")
 }
 
-// アルバムのシードデータ
-// 本来はデータはDBにあるもんだけど、今回はここに
-var albums = []album{
-	{ID: "1", Title: "Blue Train", Artist: "John Coltrane", Price: 56.99},
-	{ID: "2", Title: "Jeru", Artist: "Gerry Mulligan", Price: 17.99},
-	{ID: "3", Title: "Sarah Vaughan and Clifford Brown", Artist: "Sarah Vaughan", Price: 39.99},
-}
-
 // json で全てのアルバム情報を返す
+//
 func getAlbums(c *gin.Context) { // ここの引数の(c *gin.Context)はどうも、ginのメソッドContext(gin.Context)をcに省略する、みたいな意味みたいね
-	// なので、↓はContext.IndentedJSONが性格なメソッド名なんだろう。
+	// なので、↓はContext.IndentedJSONが正確なメソッド名なんだろう。
 	c.IndentedJSON(http.StatusOK, albums)
 }
 
